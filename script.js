@@ -2,39 +2,82 @@ const addButton = document.getElementById("addTask");
 const taskInput = document.getElementById("taskInput");
 const taskList = document.getElementById("taskList");
 
-function addTask() {
-    const task = taskInput.value.trim();
-    if (task) {
-        createTaskElement(task);
-        taskInput.value = '';
-        saveTasks();
-    } else {
-        alert('Please enter a task!');
+let list=[]
+function add(){
+    const item =taskInput.value;
+    if(item){
+        list.push(item);
+        show(item);
+        ls(list);
+        taskInput.value="";
     }
 }
+function show(item){
+    const el=document.createElement('li');
+    el.innerText=item;
 
-addButton.addEventListener('click', addTask);
-
-function createTaskElement(task) {
-    const listItem = document.createElement('li');
-    listItem.textContent = task;
-    taskList.appendChild(listItem);
-}
-
-function saveTasks() {
-    let tasks = [];
-    taskList.querySelectorAll('li').forEach(function(item) {
-        tasks.push(item.textContent.trim());
+    const button=document.createElement('button');
+    button.innerText='DELETE';
+    button.style.backgroundColor='red';
+    button.style.border='none';
+    button.style.fontSize='18px';
+    button.style.color='white';
+    button.style.padding='8px';
+    button.style.borderRadius='5px';
+    button.addEventListener('click',function(event){      
+        const listitem=event.target.parentElement;
+        taskList.removeChild(listitem);  
+        list=list.filter(i => i !== item);
+        ls(list);
     });
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    
+    el.appendChild(button);
+    taskList.appendChild(el);
+
 }
-
-function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    tasks.forEach(function(task) {
-        createTaskElement(task);
-    });
+function ls(list){
+    const str=JSON.stringify(list);
+    localStorage.setItem('tasks',str);         
 }
+function getls(){
+    const task=localStorage.getItem('tasks');
+    if (task) {
+        list = JSON.parse(task);
+        list.forEach((item)=>{
+            show(item);
+        })
+
+    }
+}
+addButton.addEventListener('click',add);
+window.addEventListener('DOMContentLoaded',getls)
 
 
-window.addEventListener('load', loadTasks);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
